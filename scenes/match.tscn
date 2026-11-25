@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/match_manager.gd" id="1_match"]
 [ext_resource type="PackedScene" path="res://ui/hud.tscn" id="3_hud"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/ai/npc_manager.gd" id="7_npc"]
 [ext_resource type="Script" path="res://scripts/systems/interior_loader.gd" id="8_interior"]
 [ext_resource type="Script" path="res://scripts/systems/day_night_cycle.gd" id="9_daynight"]
+[ext_resource type="Script" path="res://scripts/world/event_director.gd" id="10_events"]
 
 [node name="Match" type="Node3D"]
 script = ExtResource("1_match")
@@ -50,3 +51,9 @@ script = ExtResource("8_interior")
 script = ExtResource("9_daynight")
 day_length_sec = 240.0
 start_time = 0.3
+
+[node name="EventDirector" type="Node" parent="."]
+script = ExtResource("10_events")
+enabled = true
+min_interval_sec = 40.0
+max_interval_sec = 100.0

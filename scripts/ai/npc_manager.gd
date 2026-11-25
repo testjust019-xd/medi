@@ -5,6 +5,7 @@ const MATCH_RULES := preload("res://data/match_rules/default.tres")
 var npcs: Array[CharacterBody3D] = []
 var density: int = 1
 func _ready() -> void:
+	add_to_group("npc_manager")
 	density = MATCH_RULES.npc_density
 	await get_tree().process_frame
 	_spawn_npcs()
