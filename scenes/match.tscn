@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/match_manager.gd" id="1_match"]
 [ext_resource type="PackedScene" path="res://ui/hud.tscn" id="3_hud"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/systems/day_night_cycle.gd" id="9_daynight"]
 [ext_resource type="Script" path="res://scripts/world/event_director.gd" id="10_events"]
 [ext_resource type="Script" path="res://scripts/world/world_memory.gd" id="11_memory"]
+[ext_resource type="Script" path="res://scripts/world/unknown_spawner.gd" id="12_unknown"]
 
 [node name="Match" type="Node3D"]
 script = ExtResource("1_match")
@@ -61,3 +62,10 @@ max_interval_sec = 100.0
 
 [node name="WorldMemory" type="Node" parent="."]
 script = ExtResource("11_memory")
+
+[node name="UnknownSpawner" type="Node" parent="."]
+script = ExtResource("12_unknown")
+enabled = true
+min_delay = 80.0
+max_delay = 200.0
+spawn_chance = 0.4
