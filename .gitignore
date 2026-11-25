@@ -1,0 +1,13 @@
+# Godot 4+
+.godot/
+*.import
+android/
+builds/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

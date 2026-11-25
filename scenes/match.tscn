@@ -1,0 +1,46 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/match_manager.gd" id="1_match"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" path="res://actors/player.tscn" id="4_player"]
+[ext_resource type="Script" path="res://scripts/systems/combat_system.gd" id="5_combat"]
+[ext_resource type="Script" path="res://scripts/systems/throw_system.gd" id="6_throw"]
+[ext_resource type="Script" path="res://scripts/ai/npc_manager.gd" id="7_npc"]
+[ext_resource type="Script" path="res://scripts/systems/interior_loader.gd" id="8_interior"]
+
+[node name="Match" type="Node3D"]
+script = ExtResource("1_match")
+
+[node name="MapsRoot" type="Node3D" parent="."]
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="Spawn0" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
+
+[node name="Spawn1" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -5)
+
+[node name="Spawn2" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, -5)
+
+[node name="Spawn3" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -10)
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("..")
+spawnable_scenes = PackedStringArray(["res://actors/player.tscn"])
+
+[node name="CombatSystem" type="Node" parent="."]
+script = ExtResource("5_combat")
+
+[node name="ThrowSystem" type="Node3D" parent="."]
+script = ExtResource("6_throw")
+
+[node name="NpcManager" type="Node3D" parent="."]
+script = ExtResource("7_npc")
+
+[node name="InteriorLoader" type="Node" parent="."]
+script = ExtResource("8_interior")

@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/lobby.gd" id="1_lobby"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_lobby")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.08, 0.08, 0.09, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250
+offset_top = -220
+offset_right = 250
+offset_bottom = 220
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Salon privé"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="CodeLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Code: ..."
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.3, 0.8, 0.9, 1)
+theme_override_font_sizes/font_size = 18
+
+[node name="Separator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="PlayersTitle" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Joueurs connectés:"
+theme_override_font_sizes/font_size = 14
+
+[node name="PlayerList" type="VBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="StatusLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "..."
+theme_override_colors/font_color = Color(0.6, 0.6, 0.65, 1)
+theme_override_font_sizes/font_size = 13
+
+[node name="StartBtn" type="Button" parent="VBox"]
+layout_mode = 2
+text = "Démarrer la partie"
+theme_override_font_sizes/font_size = 16
+
+[node name="BackBtn" type="Button" parent="VBox"]
+layout_mode = 2
+text = "Retour au menu"
+theme_override_colors/font_color = Color(0.6, 0.6, 0.65, 1)
+
+[connection signal="pressed" from="VBox/StartBtn" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="VBox/BackBtn" to="." method="_on_back_pressed"]

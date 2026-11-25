@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://actors/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/systems/parkour_system.gd" id="2_parkour"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
+radius = 0.4
+height = 1.6
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 1.6
+
+[sub_resource type="StandardMaterial3D" id="Mat_1"]
+albedo_color = Color(0.4, 0.6, 0.5, 1)
+roughness = 0.6
+
+[sub_resource type="SceneReplicationConfig" id="ReplCfg_1"]
+properties = PackedStringArray("NodePath(..:position)", "NodePath(..:health)", "NodePath(..:player_state)", "NodePath(..:player_name)", "NodePath(..:team)")
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_player")
+
+[node name="CameraRig" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 4.5)
+fov = 70
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+mesh = SubResource("CapsuleMesh_1")
+material_override = SubResource("Mat_1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="NameLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+billboard = 1
+text = "Player"
+font_size = 24
+outline_modulate = Color(0, 0, 0, 1)
+outline_size = 8
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("ReplCfg_1")
+
+[node name="ParkourSystem" type="Node3D" parent="."]
+script = ExtResource("2_parkour")
+
+[node name="ForwardRay" type="RayCast3D" parent="ParkourSystem"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+target_position = Vector3(0, 0, -1.5)
+
+[node name="HighRay" type="RayCast3D" parent="ParkourSystem"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+target_position = Vector3(0, 0, -1.5)
+
+[node name="DownRay" type="RayCast3D" parent="ParkourSystem"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0.5)
+target_position = Vector3(0, -2.5, 0)

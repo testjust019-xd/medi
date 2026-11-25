@@ -1,0 +1,13 @@
+{
+  "name": "medieval-relay-server",
+  "version": "1.0.0",
+  "description": "WebSocket relay server for Medieval Hide & Seek — NAT traversal for internet multiplayer",
+  "main": "relay-server.js",
+  "scripts": {
+    "start": "node relay-server.js",
+    "dev": "node relay-server.js --port 8080"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

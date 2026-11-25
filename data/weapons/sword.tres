@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Weapon" load_steps=2 format=3]
+[ext_resource type="Script" path="res://data/weapons/weapon.gd" id="1_w"]
+[resource]
+script = ExtResource("1_w")
+kind = 0
+type = 0
+display_name = "Épée"
+damage = 25
+attack_range = 2.2
+attack_angle = 70.0
+cooldown_sec = 0.8
+stamina_cost = 15.0
+knockback_force = 5.0
+projectile_speed = 0.0
+projectile_lifetime = 0.0
+block_damage_reduction = 0.0
