@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/match_manager.gd" id="1_match"]
 [ext_resource type="PackedScene" path="res://ui/hud.tscn" id="3_hud"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/systems/throw_system.gd" id="6_throw"]
 [ext_resource type="Script" path="res://scripts/ai/npc_manager.gd" id="7_npc"]
 [ext_resource type="Script" path="res://scripts/systems/interior_loader.gd" id="8_interior"]
+[ext_resource type="Script" path="res://scripts/systems/day_night_cycle.gd" id="9_daynight"]
 
 [node name="Match" type="Node3D"]
 script = ExtResource("1_match")
@@ -44,3 +45,8 @@ script = ExtResource("7_npc")
 
 [node name="InteriorLoader" type="Node" parent="."]
 script = ExtResource("8_interior")
+
+[node name="DayNightCycle" type="Node" parent="."]
+script = ExtResource("9_daynight")
+day_length_sec = 240.0
+start_time = 0.3
