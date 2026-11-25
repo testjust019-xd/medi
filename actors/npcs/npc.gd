@@ -1,5 +1,5 @@
 extends CharacterBody3D
-## NPC — routines par rôle, un peu plus vivant.
+## NPC — routines par rôle + humeur selon WorldMemory.
 enum State { IDLE, PATROL, WORK, REACT, PANIC }
 var state: State = State.IDLE
 var patrol_points: Array[Vector3] = []
@@ -23,6 +23,16 @@ func _ready() -> void:
 	_apply_type_stats()
 	state_timer = randf_range(1.0, 3.5)
 	home_center = global_position
+	_apply_memory_mood()
+func _apply_memory_mood() -> void:
+	var mem := get_node_or_null("/root/WorldMemory")
+	if mem == null: return
+	var rep := 0
+	if mem.has_method("get_rep"): rep = mem.get_rep()
+	if rep >= 5 and npc_type == 0: walk_speed *= 0.9
+	elif rep <= -5 and npc_type == 2: walk_speed *= 1.15
+	if mem.has_method("has_flag") and mem.has_flag("condemned_helped") and npc_type == 0:
+		state_timer = randf_range(2.0, 5.0)
 func _apply_type_color() -> void:
 	var mat := StandardMaterial3D.new()
 	mat.roughness = 0.7
@@ -40,17 +50,14 @@ func _apply_type_stats() -> void:
 		2: walk_speed = 1.7
 		3: walk_speed = 1.3
 func _physics_process(delta: float) -> void:
-	if not is_on_floor():
-		velocity.y -= GRAVITY * delta
+	if not is_on_floor(): velocity.y -= GRAVITY * delta
 	state_timer -= delta
 	match state:
 		State.IDLE:
 			velocity.x = move_toward(velocity.x, 0, delta * 5.0)
 			velocity.z = move_toward(velocity.z, 0, delta * 5.0)
-			if state_timer <= 0.0:
-				_pick_next_behavior()
-		State.PATROL:
-			_move_toward_patrol(delta)
+			if state_timer <= 0.0: _pick_next_behavior()
+		State.PATROL: _move_toward_patrol(delta)
 		State.WORK:
 			velocity.x = move_toward(velocity.x, 0, delta * 4.0)
 			velocity.z = move_toward(velocity.z, 0, delta * 4.0)
@@ -61,7 +68,6 @@ func _physics_process(delta: float) -> void:
 					var dir := to.normalized()
 					velocity.x = dir.x * walk_speed * 0.6
 					velocity.z = dir.z * walk_speed * 0.6
-					mesh.rotation.y = lerp_angle(mesh.rotation.y, atan2(dir.x, dir.z), delta * 4.0)
 			if state_timer <= 0.0:
 				state = State.IDLE
 				state_timer = randf_range(1.5, 3.0)
@@ -79,7 +85,6 @@ func _physics_process(delta: float) -> void:
 				var dir := Vector3(sin(state_timer * 3.0), 0, cos(state_timer * 2.0)).normalized()
 				velocity.x = dir.x * walk_speed * 1.8
 				velocity.z = dir.z * walk_speed * 1.8
-				mesh.rotation.y = lerp_angle(mesh.rotation.y, atan2(dir.x, dir.z), delta * 8.0)
 			else:
 				velocity.x = move_toward(velocity.x, 0, delta * 6.0)
 				velocity.z = move_toward(velocity.z, 0, delta * 6.0)
@@ -101,8 +106,7 @@ func _move_toward_patrol(delta: float) -> void:
 	var target := patrol_points[current_point]
 	var to := target - global_position
 	to.y = 0
-	var dist := to.length()
-	if dist < 0.6:
+	if to.length() < 0.6:
 		current_point = (current_point + 1) % patrol_points.size()
 		state = State.IDLE
 		state_timer = randf_range(0.5, 3.0) if npc_type == 2 else randf_range(1.5, 4.0)
@@ -117,19 +121,15 @@ func _pick_next_behavior() -> void:
 			if has_work_point and randf() < 0.7:
 				state = State.WORK
 				state_timer = randf_range(4.0, 10.0)
-			else:
-				_start_patrol()
-		2:
-			_start_patrol()
+			else: _start_patrol()
+		2: _start_patrol()
 		3:
 			if has_work_point and randf() < 0.5:
 				state = State.WORK
 				state_timer = randf_range(3.0, 8.0)
-			else:
-				_start_patrol()
+			else: _start_patrol()
 		_:
-			if randf() < 0.65:
-				_start_patrol()
+			if randf() < 0.65: _start_patrol()
 			else:
 				state = State.IDLE
 				state_timer = randf_range(2.0, 5.0)
@@ -146,8 +146,7 @@ func react_to_event(event_pos: Vector3) -> void:
 		state_timer = randf_range(2.0, 3.5)
 func set_patrol_points(points: Array[Vector3]) -> void:
 	patrol_points = points
-	if not points.is_empty():
-		current_point = randi() % points.size()
+	if not points.is_empty(): current_point = randi() % points.size()
 func set_work_point(pos: Vector3) -> void:
 	work_point = pos
 	has_work_point = true
