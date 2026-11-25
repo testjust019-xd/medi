@@ -1,0 +1,35 @@
+{
+  "kingdom_name": "Valdoria",
+  "era": "Époque actuelle — royaume marqué par son passé",
+  "summary": "Ancien royaume médiéval de villages, forêts, routes commerciales et forteresses. Unifié après des siècles de rivalités, prospère puis troublé par trahisons et disparitions.",
+  "periods": [
+    {"id": "origins", "name": "Les Origines", "blurb": "Fondation des premiers villages autour des rivières et des collines."},
+    {"id": "unity", "name": "L'Unification", "blurb": "Naissance du royaume sous la bannière des premiers rois."},
+    {"id": "prosperity", "name": "L'Âge Prospère", "blurb": "Commerce, marchés, routes sûres, artisanat florissant."},
+    {"id": "conflicts", "name": "Les Conflits", "blurb": "Rivalités entre familles nobles, guerres locales, sièges."},
+    {"id": "troubled", "name": "La Période Troublée", "blurb": "Disparitions, trahisons, crises de confiance envers la couronne."},
+    {"id": "present", "name": "L'Époque Actuelle", "blurb": "Le royaume vit encore, mais les cicatrices restent visibles."}
+  ],
+  "regions": [
+    {"id": "capital", "name": "Cité royale", "map": "kingdom", "notes": "Marché, remparts, pouvoir."},
+    {"id": "castle", "name": "Château royal", "map": "castle", "notes": "Cour, donjons, grande salle."},
+    {"id": "forest", "name": "Forêt interdite", "map": "forest", "notes": "Ruines, lacs, secrets anciens."},
+    {"id": "test_yard", "name": "Cour d'entraînement", "map": "greybox", "notes": "Zone de test des gardes."}
+  ],
+  "noble_families": [
+    {"id": "aldric", "name": "Maison Aldric", "trait": "Fidèle à la couronne", "color": "#8B7355"},
+    {"id": "vorne", "name": "Maison Vorne", "trait": "Ambition et commerce", "color": "#6B4E71"},
+    {"id": "kael", "name": "Maison Kael", "trait": "Guerriers des frontières", "color": "#3D5A5B"},
+    {"id": "sere", "name": "Maison Sere", "trait": "Archives et secrets", "color": "#4A5568"}
+  ],
+  "daily_life": [
+    "Agriculteurs aux champs",
+    "Marchands aux étals",
+    "Forgerons à l'atelier",
+    "Gardes en patrouille",
+    "Voyageurs sur les routes",
+    "Taverniers et clients",
+    "Familles dans les maisons",
+    "Enfants dans les rues"
+  ]
+}
