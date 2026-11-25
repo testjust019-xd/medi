@@ -2,78 +2,154 @@
 
 [ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_menu"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Node3D"]
+script = ExtResource("1_menu")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Root" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_menu")
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="BG" type="ColorRect" parent="."]
+[node name="Dim" type="ColorRect" parent="UI/Root"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.08, 0.08, 0.09, 1)
+mouse_filter = 2
+color = Color(0.02, 0.02, 0.04, 0.35)
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="UI/Root"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200
-offset_top = -180
-offset_right = 200
-offset_bottom = 180
-theme_override_constants/separation = 16
+offset_left = -210.0
+offset_top = -240.0
+offset_right = 210.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Title" type="Label" parent="VBox"]
+[node name="Margin" type="MarginContainer" parent="UI/Root/Panel"]
 layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="UI/Root/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="UI/Root/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.78, 0.4, 1)
+theme_override_font_sizes/font_size = 30
 text = "Medieval Hide & Seek"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 32
 
-[node name="Sub" type="Label" parent="VBox"]
+[node name="Sub" type="Label" parent="UI/Root/Panel/Margin/VBox"]
 layout_mode = 2
-text = "Prototype V1 — Godot 4"
+theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 13
+text = "Un royaume de cachettes… et de secrets"
 horizontal_alignment = 1
-theme_override_colors/font_color = Color(0.6, 0.6, 0.65, 1)
-theme_override_font_sizes/font_size = 14
 
-[node name="NameLabel" type="Label" parent="VBox"]
+[node name="Sep" type="HSeparator" parent="UI/Root/Panel/Margin/VBox"]
 layout_mode = 2
-text = "Votre nom:"
 
-[node name="NameEdit" type="LineEdit" parent="VBox"]
+[node name="NameLabel" type="Label" parent="UI/Root/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 1)
+text = "Votre nom"
+
+[node name="NameEdit" type="LineEdit" parent="UI/Root/Panel/Margin/VBox"]
 layout_mode = 2
 text = "Player"
 placeholder_text = "Entrez votre nom"
 
-[node name="HostBtn" type="Button" parent="VBox"]
+[node name="HostBtn" type="Button" parent="UI/Root/Panel/Margin/VBox"]
 layout_mode = 2
-text = "Heberger une partie"
 theme_override_font_sizes/font_size = 16
+text = "Héberger une partie"
 
-[node name="JoinBox" type="HBoxContainer" parent="VBox"]
+[node name="JoinRow" type="HBoxContainer" parent="UI/Root/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="CodeEdit" type="LineEdit" parent="VBox/JoinBox"]
+[node name="CodeEdit" type="LineEdit" parent="UI/Root/Panel/Margin/VBox/JoinRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Code d'invitation ou IP"
+placeholder_text = "Code ou IP"
 
-[node name="JoinBtn" type="Button" parent="VBox/JoinBox"]
+[node name="JoinBtn" type="Button" parent="UI/Root/Panel/Margin/VBox/JoinRow"]
 layout_mode = 2
 text = "Rejoindre"
 
-[node name="Hint" type="Label" parent="VBox"]
+[node name="ExploreBtn" type="Button" parent="UI/Root/Panel/Margin/VBox"]
 layout_mode = 2
-text = "Astuce: heberger sur un PC, partager le code, rejoindre depuis un autre."
-theme_override_colors/font_color = Color(0.5, 0.5, 0.55, 1)
-theme_override_font_sizes/font_size = 11
+text = "Explorer le royaume (solo)"
 
-[connection signal="pressed" from="VBox/HostBtn" to="." method="_on_host_pressed"]
-[connection signal="pressed" from="VBox/JoinBox/JoinBtn" to="." method="_on_join_pressed"]
+[node name="CustomBtn" type="Button" parent="UI/Root/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Personnalisation"
+
+[node name="UnknownRow" type="HBoxContainer" parent="UI/Root/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="UnknownCheck" type="CheckBox" parent="UI/Root/Panel/Margin/VBox/UnknownRow"]
+layout_mode = 2
+text = "MEDIEVAL UNKNOWN (mystères)"
+
+[node name="Hint" type="Label" parent="UI/Root/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.5, 0.45, 1)
+theme_override_font_sizes/font_size = 11
+text = "Astuce : héberge, partage le code, rejoins depuis un autre appareil."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="EventCard" type="PanelContainer" parent="UI/Root"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -110.0
+offset_right = 340.0
+offset_bottom = -24.0
+grow_vertical = 0
+
+[node name="Margin" type="MarginContainer" parent="UI/Root/EventCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="EventText" type="Label" parent="UI/Root/EventCard/Margin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.75, 0.55, 1)
+theme_override_font_sizes/font_size = 13
+text = "…"
+autowrap_mode = 2
+
+[node name="EventTitle" type="Label" parent="UI/Root/EventCard"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = -18.0
+theme_override_colors/font_color = Color(0.75, 0.6, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "✦ ÉVÉNEMENT MYSTÉRIEUX"
+
+[connection signal="pressed" from="UI/Root/Panel/Margin/VBox/HostBtn" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="UI/Root/Panel/Margin/VBox/JoinRow/JoinBtn" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="UI/Root/Panel/Margin/VBox/ExploreBtn" to="." method="_on_explore_pressed"]
+[connection signal="pressed" from="UI/Root/Panel/Margin/VBox/CustomBtn" to="." method="_on_customize_pressed"]
