@@ -22,6 +22,10 @@ const CATALOG := [
 	{"id": "the_condemned", "name": "Le Condamné", "type": "important", "duration": 120.0, "weight": 1.2, "description": "Un habitant doit être jugé. Les témoignages se contredisent.", "player_choices": true},
 	{"id": "lost_traveler", "name": "Voyageur perdu", "type": "ordinary", "duration": 50.0, "weight": 2.0, "description": "Un voyageur demande son chemin, confus et inquiet."},
 	{"id": "mystery_letter", "name": "Lettre oubliée", "type": "mystery", "duration": 40.0, "weight": 1.0, "description": "Une lettre froissée apparaît près d'un bâtiment. Personne ne la réclame."},
+	{"id": "tavern_brawl", "name": "Bagarre de taverne", "type": "ordinary", "duration": 45.0, "weight": 2.0, "description": "Des voix s'élèvent dans la taverne. Une dispute dégénère — stylisée, sans sang."},
+	{"id": "escaped_animal", "name": "Animal échappé", "type": "ordinary", "duration": 40.0, "weight": 2.2, "description": "Une bête de ferme court dans les rues. Les villageois s'agitent."},
+	{"id": "guard_arrest", "name": "Arrestation", "type": "important", "duration": 70.0, "weight": 1.3, "description": "Les gardes emmènent un habitant. La foule murmure."},
+	{"id": "missing_villager", "name": "Disparition", "type": "important", "duration": 80.0, "weight": 1.0, "description": "Un habitant n'est pas rentré. On fouille les environs."},
 ]
 
 func _ready() -> void:
@@ -134,6 +138,14 @@ func _end_event(id: String, outcome: String) -> void:
 	_active.erase(id)
 	event_ended.emit(id, outcome)
 	print("[EventDirector] END %s → %s" % [data.get("name", id), outcome])
+	_record_memory(id, str(data.get("name", id)), outcome)
+
+func _record_memory(event_id: String, event_name: String, outcome: String) -> void:
+	var mem := get_node_or_null("/root/WorldMemory")
+	if mem == null and get_tree().current_scene:
+		mem = get_tree().current_scene.get_node_or_null("WorldMemory")
+	if mem and mem.has_method("record_event"):
+		mem.record_event(event_id, event_name, outcome)
 
 func player_intervene(event_id: String, choice: String) -> bool:
 	if not _active.has(event_id):
