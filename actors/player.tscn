@@ -52,12 +52,25 @@ script = ExtResource("2_parkour")
 
 [node name="ForwardRay" type="RayCast3D" parent="ParkourSystem"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-target_position = Vector3(0, 0, -1.5)
+target_position = Vector3(0, 0, -1.6)
+enabled = true
 
 [node name="HighRay" type="RayCast3D" parent="ParkourSystem"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
-target_position = Vector3(0, 0, -1.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
+target_position = Vector3(0, 0, -1.6)
+enabled = true
 
 [node name="DownRay" type="RayCast3D" parent="ParkourSystem"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0.5)
-target_position = Vector3(0, -2.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0.4)
+target_position = Vector3(0, -2.8, 0)
+enabled = true
+
+[node name="LeftRay" type="RayCast3D" parent="ParkourSystem"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+target_position = Vector3(-1.15, 0, 0)
+enabled = true
+
+[node name="RightRay" type="RayCast3D" parent="ParkourSystem"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+target_position = Vector3(1.15, 0, 0)
+enabled = true
