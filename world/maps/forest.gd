@@ -1,6 +1,6 @@
 extends Node3D
 ## THE FORBIDDEN FOREST — version polie
-## Forêt dense + vent léger sur les feuilles, village, ruines, animaux, décor utilisable.
+## Forêt dense + vent léger sur les feuilles, village, ruines, animaux, décor utilisable, lacs, arbres grimpables.
 
 const BARK := Color(0.30, 0.22, 0.14)
 const LEAF := Color(0.16, 0.30, 0.15)
@@ -31,6 +31,7 @@ const WIND_SPEED := 1.1
 func _ready() -> void:
 	_rng.seed = 77
 	_build_ground()
+	_build_lakes()
 	_build_dense_forest()
 	_build_abandoned_village()
 	_build_ruins()
@@ -122,6 +123,7 @@ func _tree(pos: Vector3, scale: float = 1.0) -> void:
 	var leaf_color := LEAF if _rng.randf() > 0.3 else DARK_LEAF
 	var trunk_body := StaticBody3D.new()
 	trunk_body.global_position = pos
+	trunk_body.add_to_group("climbable_tree")
 	add_child(trunk_body)
 	var trunk_mi := MeshInstance3D.new()
 	var trunk_mesh := CylinderMesh.new()
@@ -157,6 +159,47 @@ func _build_ground() -> void:
 	_box(Vector3(0, -0.1, 0), Vector3(HALF * 2.2, 0.2, HALF * 2.2), GROUND)
 	_box(Vector3(0, -0.05, 0), Vector3(14, 0.12, 14), MOSS)
 	_box(Vector3(18, -0.05, -12), Vector3(10, 0.12, 8), MOSS)
+
+
+func _build_lakes() -> void:
+	_build_lake(Vector3(22, -0.15, 22), 11.0, 8.5)
+	_build_lake(Vector3(-20, -0.15, -18), 6.5, 5.0)
+	_build_lake(Vector3(8, -0.12, -8), 4.0, 3.2)
+
+
+func _build_lake(center: Vector3, radius_x: float, radius_z: float) -> void:
+	var water := MeshInstance3D.new()
+	var water_mesh := CylinderMesh.new()
+	water_mesh.top_radius = max(radius_x, radius_z)
+	water_mesh.bottom_radius = max(radius_x, radius_z)
+	water_mesh.height = 0.25
+	water.mesh = water_mesh
+	var water_mat := StandardMaterial3D.new()
+	water_mat.albedo_color = Color(0.15, 0.35, 0.45, 0.85)
+	water_mat.roughness = 0.15
+	water_mat.metallic = 0.3
+	water_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	water.material_override = water_mat
+	water.position = center
+	water.scale = Vector3(radius_x / max(radius_x, radius_z), 1.0, radius_z / max(radius_x, radius_z))
+	add_child(water)
+	var shore := MeshInstance3D.new()
+	var shore_mesh := CylinderMesh.new()
+	shore_mesh.top_radius = max(radius_x, radius_z) + 1.2
+	shore_mesh.bottom_radius = max(radius_x, radius_z) + 1.2
+	shore_mesh.height = 0.18
+	shore.mesh = shore_mesh
+	shore.material_override = _mat(MOSS)
+	shore.position = center + Vector3(0, -0.05, 0)
+	shore.scale = Vector3(radius_x / max(radius_x, radius_z), 1.0, radius_z / max(radius_x, radius_z))
+	add_child(shore)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(center.x * 100 + center.z)
+	for i in 5:
+		var angle := rng.randf() * TAU
+		var r := max(radius_x, radius_z) * rng.randf_range(0.75, 1.05)
+		var p := center + Vector3(cos(angle) * r * (radius_x / max(radius_x, radius_z)), 0.4, sin(angle) * r * (radius_z / max(radius_x, radius_z)))
+		_box(p, Vector3(rng.randf_range(0.8, 1.6), rng.randf_range(0.5, 1.1), rng.randf_range(0.8, 1.5)), STONE)
 
 
 func _build_dense_forest() -> void:
