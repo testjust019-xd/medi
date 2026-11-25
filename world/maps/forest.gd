@@ -1,6 +1,6 @@
 extends Node3D
-## THE FORBIDDEN FOREST — version améliorée
-## Forêt dense, village abandonné, ruines, grottes, pont, animaux & décor utilisable.
+## THE FORBIDDEN FOREST — version polie
+## Forêt dense + vent léger sur les feuilles, village, ruines, animaux, décor utilisable.
 
 const BARK := Color(0.30, 0.22, 0.14)
 const LEAF := Color(0.16, 0.30, 0.15)
@@ -19,6 +19,14 @@ const HALF := 40.0
 var _mats: Dictionary = {}
 var _rng := RandomNumberGenerator.new()
 
+var _leaf_nodes: Array[MeshInstance3D] = []
+var _leaf_base_rot: Array[Vector3] = []
+var _leaf_phase: Array[float] = []
+var _wind_time: float = 0.0
+
+const WIND_STRENGTH := 0.045
+const WIND_SPEED := 1.1
+
 
 func _ready() -> void:
 	_rng.seed = 77
@@ -32,6 +40,23 @@ func _ready() -> void:
 	_build_animals()
 	_build_lighting()
 	_add_map_spawns()
+
+
+func _process(delta: float) -> void:
+	_wind_time += delta * WIND_SPEED
+	_apply_wind()
+
+
+func _apply_wind() -> void:
+	for i in _leaf_nodes.size():
+		var leaf := _leaf_nodes[i]
+		if not is_instance_valid(leaf):
+			continue
+		var phase: float = _leaf_phase[i]
+		var base: Vector3 = _leaf_base_rot[i]
+		var sway_x := sin(_wind_time + phase) * WIND_STRENGTH
+		var sway_z := cos(_wind_time * 0.7 + phase * 1.3) * WIND_STRENGTH * 0.7
+		leaf.rotation = base + Vector3(sway_x, 0.0, sway_z)
 
 
 func _mat(color: Color) -> StandardMaterial3D:
@@ -62,10 +87,20 @@ func _box(pos: Vector3, size: Vector3, color: Color) -> StaticBody3D:
 	return body
 
 
-func _cyl(pos: Vector3, r: float, h: float, color: Color) -> StaticBody3D:
-	var body := StaticBody3D.new()
-	body.global_position = pos
-	add_child(body)
+func _cyl(pos: Vector3, r: float, h: float, color: Color, parent: Node = null) -> MeshInstance3D:
+	var body: Node3D
+	if parent == null:
+		body = StaticBody3D.new()
+		body.global_position = pos
+		add_child(body)
+		var col := CollisionShape3D.new()
+		var shape := CylinderShape3D.new()
+		shape.radius = r
+		shape.height = h
+		col.shape = shape
+		body.add_child(col)
+	else:
+		body = parent
 	var mi := MeshInstance3D.new()
 	var mesh := CylinderMesh.new()
 	mesh.top_radius = r
@@ -73,21 +108,49 @@ func _cyl(pos: Vector3, r: float, h: float, color: Color) -> StaticBody3D:
 	mesh.height = h
 	mi.mesh = mesh
 	mi.material_override = _mat(color)
+	if parent:
+		mi.position = pos
+	else:
+		mi.position = Vector3.ZERO
 	body.add_child(mi)
-	var col := CollisionShape3D.new()
-	var shape := CylinderShape3D.new()
-	shape.radius = r
-	shape.height = h
-	col.shape = shape
-	body.add_child(col)
-	return body
+	return mi
 
 
 func _tree(pos: Vector3, scale: float = 1.0) -> void:
 	var trunk_h := _rng.randf_range(4.5, 7.5) * scale
 	var leaf_r := _rng.randf_range(2.2, 3.8) * scale
-	_cyl(pos, 0.45 * scale, trunk_h, BARK)
-	_cyl(Vector3(pos.x, trunk_h * 0.85, pos.z), leaf_r, trunk_h * 0.7, LEAF if _rng.randf() > 0.3 else DARK_LEAF)
+	var leaf_color := LEAF if _rng.randf() > 0.3 else DARK_LEAF
+	var trunk_body := StaticBody3D.new()
+	trunk_body.global_position = pos
+	add_child(trunk_body)
+	var trunk_mi := MeshInstance3D.new()
+	var trunk_mesh := CylinderMesh.new()
+	trunk_mesh.top_radius = 0.4 * scale
+	trunk_mesh.bottom_radius = 0.5 * scale
+	trunk_mesh.height = trunk_h
+	trunk_mi.mesh = trunk_mesh
+	trunk_mi.material_override = _mat(BARK)
+	trunk_mi.position = Vector3(0, trunk_h * 0.5, 0)
+	trunk_body.add_child(trunk_mi)
+	var trunk_col := CollisionShape3D.new()
+	var trunk_shape := CylinderShape3D.new()
+	trunk_shape.radius = 0.45 * scale
+	trunk_shape.height = trunk_h
+	trunk_col.shape = trunk_shape
+	trunk_col.position = Vector3(0, trunk_h * 0.5, 0)
+	trunk_body.add_child(trunk_col)
+	var leaf_mi := MeshInstance3D.new()
+	var leaf_mesh := CylinderMesh.new()
+	leaf_mesh.top_radius = leaf_r * 0.3
+	leaf_mesh.bottom_radius = leaf_r
+	leaf_mesh.height = trunk_h * 0.65
+	leaf_mi.mesh = leaf_mesh
+	leaf_mi.material_override = _mat(leaf_color)
+	leaf_mi.position = Vector3(pos.x, trunk_h * 0.85, pos.z)
+	add_child(leaf_mi)
+	_leaf_nodes.append(leaf_mi)
+	_leaf_base_rot.append(leaf_mi.rotation)
+	_leaf_phase.append(_rng.randf() * TAU)
 
 
 func _build_ground() -> void:
