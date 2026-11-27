@@ -76,7 +76,7 @@ func _apply() -> void:
 			ambient = Color(0.5, 0.5, 0.55)
 	_sun.light_color = col
 	_sun.light_energy = energy
-	var env := get_viewport().world_3d.environment if get_viewport() and get_viewport().world_3d else null
+	var env: Environment = get_viewport().world_3d.environment if get_viewport() and get_viewport().world_3d else null
 	if env == null:
 		_ensure_environment(ambient, energy)
 	else:

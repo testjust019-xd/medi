@@ -34,7 +34,7 @@ func _ready() -> void:
 	_timer = _rng.randf_range(15.0, min_interval_sec)
 	print("[EventDirector] Valdoria online. Next event in ~%.0fs" % _timer)
 	await get_tree().process_frame
-	var hud := get_tree().current_scene.get_node_or_null("HUD") if get_tree().current_scene else null
+	var hud = get_tree().current_scene.get_node_or_null("HUD") if get_tree().current_scene else null
 	if hud:
 		if not event_started.is_connected(hud.show_event):
 			event_started.connect(hud.show_event)
@@ -44,7 +44,7 @@ func _ready() -> void:
 			event_ended.connect(_on_event_ended)
 
 func _on_event_ended(event_id: String, outcome: String) -> void:
-	var hud := get_tree().current_scene.get_node_or_null("HUD") if get_tree().current_scene else null
+	var hud = get_tree().current_scene.get_node_or_null("HUD") if get_tree().current_scene else null
 	if hud and hud.has_method("hide_event"):
 		hud.hide_event()
 	print("[EventDirector] HUD cleared after ", event_id, " / ", outcome)

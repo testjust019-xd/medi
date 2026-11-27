@@ -10,18 +10,18 @@ const THROWABLE_SCENE := preload("res://actors/throwables/throwable.tscn")
 
 signal object_thrown(pos: Vector3)
 
-var damage_levels := [0, 5, 10, 20]  # disabled, light, normal, high
+var damage_levels = [0, 5, 10, 20]  # disabled, light, normal, high
 var current_damage_level: int = 1
 
 
 ## Client → serveur: "je lance un objet dans cette direction"
 ## any_peer (pas call_local): seul le serveur exécute
-@rpc("any_peer", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func request_throw(direction: Vector3, material_type: int) -> void:
 	if not multiplayer.is_server():
 		return
-	var thrower_id := multiplayer.get_remote_sender_id()
-	var match_mgr := get_parent()
+	var thrower_id = (multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() != 0 else multiplayer.get_unique_id())
+	var match_mgr = get_parent()
 	var thrower = match_mgr.players_in_match.get(thrower_id)
 	if not thrower or not is_instance_valid(thrower):
 		return
@@ -29,8 +29,8 @@ func request_throw(direction: Vector3, material_type: int) -> void:
 		return  # capturé
 
 	# Origine: légèrement au-dessus et devant le joueur
-	var origin := thrower.global_position + Vector3.UP * 1.2 + direction.normalized() * 0.5
-	var dmg := damage_levels[clamp(current_damage_level, 0, 3)]
+	var origin = thrower.global_position + Vector3.UP * 1.2 + direction.normalized() * 0.5
+	var dmg = damage_levels[clampi(current_damage_level, 0, 3)]
 
 	# Diffuser à tous les clients (y compris le serveur via call_local)
 	spawn_throwable.rpc(origin, direction.normalized(), material_type, dmg, thrower_id)
@@ -41,13 +41,13 @@ func request_throw(direction: Vector3, material_type: int) -> void:
 ## authority + call_local: le serveur et tous les clients spawnent l'objet
 @rpc("authority", "call_local", "reliable")
 func spawn_throwable(origin: Vector3, direction: Vector3, material_type: int, damage: int, thrower_id: int) -> void:
-	var t := THROWABLE_SCENE.instantiate()
+	var t = THROWABLE_SCENE.instantiate()
 	t.material = material_type
 	t.damage = damage
 	t.thrower_id = thrower_id
 	# Le combat_system est sur le Match (parent du ThrowSystem)
-	var match_mgr := get_parent()
-	var combat := match_mgr.get_node_or_null("CombatSystem")
+	var match_mgr = get_parent()
+	var combat = match_mgr.get_node_or_null("CombatSystem")
 	if combat:
 		t.set_combat_system(combat)
 	add_child(t, true)

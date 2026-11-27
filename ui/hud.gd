@@ -70,7 +70,7 @@ func _ensure_event_ui() -> void:
 	_choices_label.visible = false
 	root.add_child(_choices_label)
 
-func show_event(data: Dictionary) -> void:
+func show_event(_id: String, data: Dictionary) -> void:
 	_ensure_event_ui()
 	if _event_label == null:
 		return
@@ -83,8 +83,8 @@ func show_event(data: Dictionary) -> void:
 		if _choices_label:
 			_choices_label.visible = false
 
-func update_event(data: Dictionary) -> void:
-	show_event(data)
+func update_event(_id: String, data: Dictionary) -> void:
+	show_event(_id, data)
 
 func hide_event() -> void:
 	if _event_label:

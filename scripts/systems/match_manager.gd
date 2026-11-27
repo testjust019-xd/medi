@@ -34,12 +34,12 @@ func _ready() -> void:
 
 
 func _load_map() -> void:
-        var map_path := GameManager.selected_map
+        var map_path = GameManager.selected_map
         if not ResourceLoader.exists(map_path):
                 push_error("[MATCH] Map not found: " + map_path)
                 map_path = "res://world/maps/greybox.tscn"  # fallback
-        var map_scene := load(map_path)
-        var map_instance := map_scene.instantiate()
+        var map_scene: PackedScene = load(map_path)
+        var map_instance = map_scene.instantiate()
         maps_root.add_child(map_instance)
         print("[MATCH] Loaded map: ", map_path)
 
@@ -58,15 +58,15 @@ func _process(delta: float) -> void:
 
 ## Spawn: le serveur instancie un avatar par joueur connecté et le nomme avec le peer_id
 func _spawn_all_players() -> void:
-        var i := 0
+        var i = 0
         for peer_id in NetworkManager.players:
-                var player := PLAYER_SCENE.instantiate()
+                var player = PLAYER_SCENE.instantiate()
                 player.name = str(peer_id)
                 player.player_name = NetworkManager.players[peer_id].get("name", "Player")
                 # Team: pair ids = hunters, impair = fugitifs (simple pour le prototype)
                 player.team = 1 if i % 2 == 0 else 0
                 # Position de spawn
-                var sp := spawn_points.get_child(i % spawn_points.get_child_count())
+                var sp = spawn_points.get_child(i % spawn_points.get_child_count())
                 if sp:
                         player.global_position = sp.global_position
                 players_in_match[peer_id] = player
@@ -87,7 +87,7 @@ func _spawn_all_players() -> void:
 func request_capture(target_id: int) -> void:
         if not multiplayer.is_server():
                 return
-        var hunter_id := multiplayer.get_remote_sender_id()
+        var hunter_id = (multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() != 0 else multiplayer.get_unique_id())
         if not _can_capture(hunter_id, target_id):
                 return
         if capture_in_progress.has(target_id):
@@ -103,7 +103,7 @@ func capture_started(hunter_id: int, target_id: int, duration: float) -> void:
         if hud:
                 hud.show_capture_progress(duration)
         # Geler le fugitif
-        var target := players_in_match.get(target_id)
+        var target = players_in_match.get(target_id)
         if target:
                 target.set_captured(1)  # being_captured
         # Notifier les PNJ (réagissent au bruit de la capture)
@@ -116,7 +116,7 @@ func capture_cancelled(target_id: int) -> void:
         capture_in_progress.erase(target_id)
         if hud:
                 hud.hide_capture_progress()
-        var target := players_in_match.get(target_id)
+        var target = players_in_match.get(target_id)
         if target:
                 target.set_captured(0)  # alive again
 
@@ -127,7 +127,7 @@ func capture_completed(target_id: int) -> void:
         capture_in_progress.erase(target_id)
         if hud:
                 hud.hide_capture_progress()
-        var target := players_in_match.get(target_id)
+        var target = players_in_match.get(target_id)
         if target:
                 target.set_captured(2)  # captured
         # Vérifier condition de victoire
@@ -136,8 +136,8 @@ func capture_completed(target_id: int) -> void:
 
 
 func _can_capture(hunter_id: int, target_id: int) -> bool:
-        var hunter := players_in_match.get(hunter_id)
-        var target := players_in_match.get(target_id)
+        var hunter = players_in_match.get(hunter_id)
+        var target = players_in_match.get(target_id)
         if not hunter or not target:
                 return false
         if hunter.team != 1 or target.team != 0:
@@ -145,7 +145,7 @@ func _can_capture(hunter_id: int, target_id: int) -> bool:
         if target.player_state >= 2:
                 return false  # déjà capturé
         # Vérifier la distance
-        var dist := hunter.global_position.distance_to(target.global_position)
+        var dist = hunter.global_position.distance_to(target.global_position)
         return dist <= MATCH_RULES.capture_range
 
 
@@ -166,7 +166,7 @@ func _check_capture_progress(delta: float) -> void:
 
 func _check_win_condition() -> void:
         # Si tous les fugitifs sont capturés → chasseurs gagnent
-        var fugitives_alive := 0
+        var fugitives_alive = 0
         for peer_id in players_in_match:
                 var p = players_in_match[peer_id]
                 if p.team == 0 and p.player_state < 2:
@@ -187,7 +187,7 @@ func _end_match(winner: String) -> void:
 
 
 func _notify_npcs(event_pos: Vector3) -> void:
-        var npc_mgr := get_node_or_null("NpcManager")
+        var npc_mgr = get_node_or_null("NpcManager")
         if npc_mgr and npc_mgr.has_method("notify_event"):
                 npc_mgr.notify_event(event_pos, 12.0)
 

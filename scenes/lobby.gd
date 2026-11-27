@@ -22,7 +22,7 @@ func _ready() -> void:
 
 	NetworkManager.peer_connected.connect(_refresh_players)
 	NetworkManager.peer_disconnected.connect(_refresh_players)
-	NetworkManager.sync_players.connect(_refresh_players)
+	NetworkManager.players_synced.connect(_refresh_players)
 	NetworkManager.server_disconnected.connect(_on_server_lost)
 	_refresh_players()
 
