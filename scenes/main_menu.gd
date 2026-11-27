@@ -13,6 +13,9 @@ var _time: float = 0.0
 
 func _ready() -> void:
 	NetworkManager.leave()
+	# Sur certains navigateurs mobiles, les boutons Godot attendent les événements souris émulés.
+	# Le champ LineEdit peut recevoir le toucher directement, contrairement aux Button.
+	Input.emulate_mouse_from_touch = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_build_world()
 	_style_ui()
