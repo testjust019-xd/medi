@@ -158,3 +158,19 @@ Des aperçus low-poly des maps se trouvent dans `docs/previews/` :
 ## Licence
 
 Prototype — à définir.
+
+
+---
+
+## Jouer dans le navigateur / sur téléphone (HTML5)
+
+Chaque push sur `main` exporte le jeu en HTML5 et le publie sur GitHub Pages
+(workflow `.github/workflows/web.yml`).
+
+1. Repo → **Settings → Pages → Source : GitHub Actions** (une seule fois)
+2. Pousser sur `main` (ou lancer le workflow à la main dans l'onglet *Actions*)
+3. Ouvrir `https://<utilisateur>.github.io/<repo>/` sur le téléphone, en paysage
+
+- **Contrôles tactiles** (`autoload/touch_controls.gd`) : joystick à gauche, glisser à droite pour regarder, boutons d'action.
+- Dans le navigateur, **Explorer** lance une partie solo locale (ENet/UDP n'existe pas sur le web). Rejoindre une partie demandera le relay WebSocket.
+- Le rendu web utilise le moteur *Compatibilité* (obligatoire pour le web).

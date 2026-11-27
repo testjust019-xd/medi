@@ -35,6 +35,8 @@ func _apply_team_color() -> void:
 func _input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
+	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		apply_look((event as InputEventMouseMotion).relative)
 	if event.is_action_pressed("camera_switch"):
 		cam_first_person = not cam_first_person
 		_switch_camera()
@@ -51,6 +53,10 @@ func _input(event: InputEvent) -> void:
 		_set_blocking(false)
 	if event.is_action_pressed("throw") and player_state == 0:
 		_try_throw()
+## Rotation de la vue : yaw sur le joueur, pitch sur le support caméra (souris ou tactile).
+func apply_look(relative: Vector2, sens: float = 0.0045) -> void:
+	rotate_y(-relative.x * sens)
+	cam_rig.rotation.x = clampf(cam_rig.rotation.x - relative.y * sens, -1.1, 0.6)
 func _try_hide_or_secret() -> void:
 	if has_meta("hidden_in_spot"):
 		var spot = get_meta("hidden_in_spot")
