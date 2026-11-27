@@ -21,9 +21,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Installer les templates d'export
+        shell: bash
         run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          src=/root/.local/share/godot/export_templates
+          dst="$HOME/.local/share/godot/export_templates"
+          ls -la "$src" || true
+          mkdir -p "$dst"
+          if [ ! "$src" -ef "$dst" ]; then cp -r "$src"/. "$dst"/; fi
+          ls -la "$dst"
       - name: Importer le projet
         run: godot --headless --import || true
       - name: Export Web
