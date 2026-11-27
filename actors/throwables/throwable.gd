@@ -7,9 +7,9 @@ extends RigidBody3D
 ## La trajectoire RigidBody3D est déterministe si les conditions initiales
 ## sont identiques. Les dégâts ne sont appliqués QUE par le serveur.
 
-enum Material { ROCK, BOTTLE, VASE, WOOD }
+enum ThrowableType { ROCK, BOTTLE, VASE, WOOD }
 
-@export var material: Material = Material.ROCK
+@export var material: ThrowableType = ThrowableType.ROCK
 @export var damage: int = 10
 @export var break_on_impact: bool = false
 @export var sound_range: float = 12.0
@@ -28,7 +28,7 @@ func _ready() -> void:
 	_apply_material_visual()
 	# Définir break_on_impact selon le matériau
 	match material:
-		Material.BOTTLE, Material.VASE:
+		ThrowableType.BOTTLE, ThrowableType.VASE:
 			break_on_impact = true
 		_:
 			break_on_impact = false
@@ -38,14 +38,14 @@ func _apply_material_visual() -> void:
 	var mat := StandardMaterial3D.new()
 	mat.roughness = 0.7
 	match material:
-		Material.ROCK:
+		ThrowableType.ROCK:
 			mat.albedo_color = Color(0.4, 0.38, 0.35)
-		Material.BOTTLE:
+		ThrowableType.BOTTLE:
 			mat.albedo_color = Color(0.2, 0.5, 0.3, 0.8)
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		Material.VASE:
+		ThrowableType.VASE:
 			mat.albedo_color = Color(0.6, 0.5, 0.35)
-		Material.WOOD:
+		ThrowableType.WOOD:
 			mat.albedo_color = Color(0.4, 0.25, 0.12)
 	$Mesh.material_override = mat
 
