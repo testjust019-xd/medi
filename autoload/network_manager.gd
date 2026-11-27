@@ -6,6 +6,7 @@ signal peer_connected(id: int)
 signal peer_disconnected(id: int)
 signal connected_to_server()
 signal server_disconnected()
+signal players_synced()
 
 const PORT: int = 7000
 const MAX_PLAYERS: int = 8
@@ -101,6 +102,7 @@ func register_player(player_name: String) -> void:
 @rpc("authority", "call_local", "reliable")
 func sync_players(updated: Dictionary) -> void:
 	players = updated
+	players_synced.emit()
 
 
 func _on_peer_connected(id: int) -> void:

@@ -55,7 +55,7 @@ func _load_interior(building_id: String) -> void:
 	if not ResourceLoader.exists(path):
 		push_warning("[INTERIOR] Interior scene not found: ", path)
 		return
-	var scene := load(path)
+	var scene: PackedScene = load(path)
 	var interior := scene.instantiate()
 	# Placer à la position du bâtiment
 	var trigger: Area3D = data["trigger"]

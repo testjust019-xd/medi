@@ -36,7 +36,7 @@ func _mat(color: Color) -> StandardMaterial3D:
 		var m := StandardMaterial3D.new()
 		m.albedo_color = color
 		m.roughness = 0.72
-		m.metalness = 0.0
+		m.metallic = 0.0
 		_mats[key] = m
 	return _mats[key]
 

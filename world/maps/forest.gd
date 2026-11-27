@@ -197,8 +197,8 @@ func _build_lake(center: Vector3, radius_x: float, radius_z: float) -> void:
 	rng.seed = int(center.x * 100 + center.z)
 	for i in 5:
 		var angle := rng.randf() * TAU
-		var r := max(radius_x, radius_z) * rng.randf_range(0.75, 1.05)
-		var p := center + Vector3(cos(angle) * r * (radius_x / max(radius_x, radius_z)), 0.4, sin(angle) * r * (radius_z / max(radius_x, radius_z)))
+		var r := maxf(radius_x, radius_z) * rng.randf_range(0.75, 1.05)
+		var p := center + Vector3(cos(angle) * r * (radius_x / maxf(radius_x, radius_z)), 0.4, sin(angle) * r * (radius_z / maxf(radius_x, radius_z)))
 		_box(p, Vector3(rng.randf_range(0.8, 1.6), rng.randf_range(0.5, 1.1), rng.randf_range(0.8, 1.5)), STONE)
 
 

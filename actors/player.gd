@@ -57,6 +57,10 @@ func _input(event: InputEvent) -> void:
 func apply_look(relative: Vector2, sens: float = 0.0045) -> void:
 	rotate_y(-relative.x * sens)
 	cam_rig.rotation.x = clampf(cam_rig.rotation.x - relative.y * sens, -1.1, 0.6)
+func set_captured(state: int) -> void:
+	set_player_state(state)
+func equip_weapon(weapon: Resource) -> void:
+	equipped_weapon = weapon
 func _try_hide_or_secret() -> void:
 	if has_meta("hidden_in_spot"):
 		var spot = get_meta("hidden_in_spot")
@@ -107,14 +111,14 @@ func _try_capture() -> void:
 		match_mgr.request_capture.rpc_id(1, nearest_id)
 func _try_attack() -> void:
 	var combat = get_parent().get_node_or_null("CombatSystem")
-	if combat and combat.has_method("request_attack"):
-		combat.request_attack(self)
+	if combat and combat.has_method("request_melee_attack"):
+		combat.request_melee_attack.rpc_id(1)
 func _set_blocking(active: bool) -> void:
 	is_blocking = active
 func _try_throw() -> void:
 	var throw_sys = get_parent().get_node_or_null("ThrowSystem")
 	if throw_sys and throw_sys.has_method("request_throw"):
-		throw_sys.request_throw(self)
+		throw_sys.request_throw.rpc_id(1, -cam.global_transform.basis.z, 0)
 func _switch_camera() -> void:
 	if cam_first_person:
 		cam_rig.position = Vector3(0, 1.6, 0)

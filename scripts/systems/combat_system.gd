@@ -22,8 +22,8 @@ signal damage_dealt(target_id: int, damage: int)
 func request_melee_attack() -> void:
         if not multiplayer.is_server():
                 return
-        var attacker_id := multiplayer.get_remote_sender_id()
-        var match_mgr := get_parent()
+        var attacker_id = (multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() != 0 else multiplayer.get_unique_id())
+        var match_mgr = get_parent()
         var attacker = match_mgr.players_in_match.get(attacker_id)
         if not attacker or not is_instance_valid(attacker):
                 return
@@ -35,7 +35,7 @@ func request_melee_attack() -> void:
                 return
 
         # Cooldown
-        var now := Time.get_ticks_msec() / 1000.0
+        var now = Time.get_ticks_msec() / 1000.0
         var last: float = _last_attack.get(attacker_id, 0.0)
         if now - last < weapon.cooldown_sec:
                 return
@@ -58,24 +58,24 @@ func request_melee_attack() -> void:
                 if target.team == attacker.team:
                         continue
 
-                var to_target := target.global_position - attacker.global_position
-                var dist := to_target.length()
+                var to_target = target.global_position - attacker.global_position
+                var dist = to_target.length()
                 if dist > weapon.attack_range:
                         continue
 
                 # Vérifier l'angle (cône devant l'attaquant)
-                var forward := -attacker.mesh.global_transform.basis.z.normalized()
-                var angle := rad_to_deg(forward.angle_to(to_target.normalized()))
+                var forward = -attacker.mesh.global_transform.basis.z.normalized()
+                var angle = rad_to_deg(forward.angle_to(to_target.normalized()))
                 if angle > weapon.attack_angle / 2.0:
                         continue
 
                 # Calculer les dégâts (réduction si blocage)
-                var damage := weapon.damage
+                var damage = weapon.damage
                 if _blocking.get(target_id, false):
                         damage = int(damage * (1.0 - SHIELD.block_damage_reduction))
 
                 # Appliquer le recul
-                var knockback_dir := to_target.normalized()
+                var knockback_dir = to_target.normalized()
                 _apply_damage.rpc(target_id, damage, knockback_dir * weapon.knockback_force)
 
 
@@ -84,8 +84,8 @@ func request_melee_attack() -> void:
 func request_ranged_attack(aim_dir: Vector3) -> void:
         if not multiplayer.is_server():
                 return
-        var attacker_id := multiplayer.get_remote_sender_id()
-        var match_mgr := get_parent()
+        var attacker_id = (multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() != 0 else multiplayer.get_unique_id())
+        var match_mgr = get_parent()
         var attacker = match_mgr.players_in_match.get(attacker_id)
         if not attacker or not is_instance_valid(attacker):
                 return
@@ -94,7 +94,7 @@ func request_ranged_attack(aim_dir: Vector3) -> void:
         if weapon == null or weapon.type != Weapon.Type.RANGED:
                 return
 
-        var now := Time.get_ticks_msec() / 1000.0
+        var now = Time.get_ticks_msec() / 1000.0
         var last: float = _last_attack.get(attacker_id, 0.0)
         if now - last < weapon.cooldown_sec:
                 return
@@ -105,8 +105,8 @@ func request_ranged_attack(aim_dir: Vector3) -> void:
 
         # Pour le prototype: raycast instantané dans la direction de l'arc
         # (en production: spawn un projectile RigidBody3D avec gravité)
-        var origin := attacker.global_position + Vector3.UP * 1.0
-        var end := origin + aim_dir.normalized() * 50.0
+        var origin = attacker.global_position + Vector3.UP * 1.0
+        var end = origin + aim_dir.normalized() * 50.0
 
         # Vérifier tous les joueurs sur le chemin (simplifié: distance à la ligne)
         for target_id in match_mgr.players_in_match:
@@ -117,9 +117,9 @@ func request_ranged_attack(aim_dir: Vector3) -> void:
                         continue
                 if target.team == attacker.team:
                         continue
-                var closest := _point_line_distance(target.global_position, origin, end)
+                var closest = _point_line_distance(target.global_position, origin, end)
                 if closest < 1.0:  # dans un rayon d'1m de la trajectoire
-                        var damage := weapon.damage
+                        var damage = weapon.damage
                         if _blocking.get(target_id, false):
                                 damage = int(damage * (1.0 - SHIELD.block_damage_reduction))
                         _apply_damage.rpc(target_id, damage, aim_dir.normalized() * 3.0)
@@ -130,14 +130,14 @@ func request_ranged_attack(aim_dir: Vector3) -> void:
 func set_blocking(active: bool) -> void:
         if not multiplayer.is_server():
                 return
-        var id := multiplayer.get_remote_sender_id()
+        var id = (multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() != 0 else multiplayer.get_unique_id())
         _blocking[id] = active
 
 
 ## Serveur → tous: "ce joueur a pris des dégâts"
 @rpc("authority", "call_local", "reliable")
 func _apply_damage(target_id: int, damage: int, knockback: Vector3) -> void:
-        var match_mgr := get_parent()
+        var match_mgr = get_parent()
         var target = match_mgr.players_in_match.get(target_id)
         if not target or not is_instance_valid(target):
                 return
@@ -159,12 +159,12 @@ func _apply_damage(target_id: int, damage: int, knockback: Vector3) -> void:
 
 
 func _point_line_distance(point: Vector3, line_start: Vector3, line_end: Vector3) -> float:
-        var line_vec := line_end - line_start
-        var line_len := line_vec.length()
+        var line_vec = line_end - line_start
+        var line_len = line_vec.length()
         if line_len < 0.001:
                 return point.distance_to(line_start)
-        var t := clamp((point - line_start).dot(line_vec) / (line_len * line_len), 0.0, 1.0)
-        var closest := line_start + line_vec * t
+        var t = clamp((point - line_start).dot(line_vec) / (line_len * line_len), 0.0, 1.0)
+        var closest = line_start + line_vec * t
         return point.distance_to(closest)
 
 

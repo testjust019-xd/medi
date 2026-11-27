@@ -11,7 +11,7 @@ func _ready() -> void:
 	_spawn_npcs()
 func _spawn_npcs() -> void:
 	var counts := [0, 6, 14, 24]
-	var count := counts[clamp(density, 0, 3)]
+	var count: int = counts[clampi(density, 0, 3)]
 	if count == 0:
 		print("[NPC] ECO density — no NPCs")
 		return
