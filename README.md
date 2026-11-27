@@ -174,3 +174,6 @@ Chaque push sur `main` exporte le jeu en HTML5 et le publie sur GitHub Pages
 - **Contrôles tactiles** (`autoload/touch_controls.gd`) : joystick à gauche, glisser à droite pour regarder, boutons d'action.
 - Dans le navigateur, **Explorer** lance une partie solo locale (ENet/UDP n'existe pas sur le web). Rejoindre une partie demandera le relay WebSocket.
 - Le rendu web utilise le moteur *Compatibilité* (obligatoire pour le web).
+
+- `?map=castle` (ou `forest`, `kingdom`, `greybox`) à la fin de l'adresse choisit la carte : `https://<utilisateur>.github.io/<repo>/?map=castle`
+- Un bouton **LOG** en haut à droite affiche les erreurs du jeu (utile pour déboguer sur téléphone).
