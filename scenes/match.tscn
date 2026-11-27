@@ -35,7 +35,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -10)
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 spawn_path = NodePath("..")
-spawnable_scenes = PackedStringArray(["res://actors/player.tscn"])
+spawnable_scenes = PackedStringArray("res://actors/player.tscn")
 
 [node name="CombatSystem" type="Node" parent="."]
 script = ExtResource("5_combat")
