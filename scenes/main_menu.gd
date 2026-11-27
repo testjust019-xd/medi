@@ -60,7 +60,7 @@ func _build_world() -> void:
 	env.fog_enabled = true
 	env.fog_light_color = Color(0.15, 0.18, 0.25)
 	env.fog_density = 0.012
-	env.tonemap_mode = Environment.TONE_MAP_ACES
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
