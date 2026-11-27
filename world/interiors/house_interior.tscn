@@ -1,12 +1,6 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://world/interiors/house_interior.gd" id="1_interior"]
-
-[sub_resource type="OmniLight3D" id="InteriorLight_1"]
-light_color = Color(1, 0.8, 0.5, 1)
-light_energy = 0.8
-omni_range = 8.0
-omni_attenuation = 1.5
 
 [node name="HouseInterior" type="Node3D"]
 script = ExtResource("1_interior")
