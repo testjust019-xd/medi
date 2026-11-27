@@ -14,6 +14,13 @@ var players: Dictionary = {}  # peer_id -> { name, team, ready }
 
 
 func host(player_name: String) -> Error:
+	# Navigateur : pas d'UDP/ENet -> partie solo locale (le multijoueur web passe par le relay).
+	if OS.has_feature("web"):
+		multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+		players.clear()
+		players[1] = { "name": player_name, "team": 0, "ready": false }
+		peer_connected.emit(1)
+		return OK
 	var peer := ENetMultiplayerPeer.new()
 	var err := peer.create_server(PORT, MAX_PLAYERS)
 	if err != OK:
@@ -28,6 +35,9 @@ func host(player_name: String) -> Error:
 
 
 func join(address: String, player_name: String) -> Error:
+	if OS.has_feature("web"):
+		push_error("Rejoindre une partie n'est pas encore disponible dans le navigateur (relay requis).")
+		return ERR_UNAVAILABLE
 	var peer := ENetMultiplayerPeer.new()
 	var err := peer.create_client(address, PORT)
 	if err != OK:
